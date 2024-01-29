@@ -29,8 +29,7 @@ if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true) {
     <link rel="stylesheet" href="css/style_home.css">
     <link rel="stylesheet" href="css/style_profil.css">
     <link rel="stylesheet" href="css/logout.css">
-    <link rel="stylesheet" href="css/radio.css">
-    <link rel="stylesheet" href="css/list_kegiatan_home.css">
+    <link rel="stylesheet" href="css/radio_kegiatan.css">
 <form action="home.php" method="POST">
     <button class="btn" type="submit" name="logout">
     <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0092E4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -56,51 +55,11 @@ function handleRadioButtonClick(event) {
 }
 </script>
 
-<!-- Welcome Message -->
 <h3 class="welcome-message">Selamat Datang <?=$_SESSION["username"]?> </h3>
 
 
 
 
-
-
-<!-- List Kegiatan -->
-<div class="pack-container">
-    <div class="header">
-      <p class="title">
-        
-      </p>
-      <div class="price-container">
-        <span></span>
-        <span>Kegiatan</span>
-      </div>
-    </div>
-    <div>
-      <ul class="lists">
-        <li class="list">
-          <span>
-            <svg aria-hidden="true" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-            </svg>
-          </span>
-          <p>
-            Kegiatan Hari Ini
-          </p>
-        </li>
-        <li class="list">
-          <span>
-            <svg aria-hidden="true" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4.5 12.75l6 6 9-13.5" stroke-linejoin="round" stroke-linecap="round"></path>
-            </svg>
-          </span>
-          <p>
-            Timeline
-          </p>
-        </li>
-    </div>
-  </div>
-
-<!-- Pindah Halaman -->
 <div class="radio-inputs">
   <label class="radio" for="radio-home" onclick="window.location.href='home.php'">
     <input id="radio-home" type="radio" name="radio" checked="">
@@ -114,6 +73,12 @@ function handleRadioButtonClick(event) {
     <input id="radio-akun" type="radio" name="radio">
     <span class="name">Akun</span>
   </label>
+</div>
+
+
+
+<div>
+
 </div>
 
 </body>

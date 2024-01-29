@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,25 +23,46 @@
     </form>
     <div class="form-section">
         <p>Gk punya Akun?? <a href="SIgn-Up.php">Daftar Sekarang!</a></p>
-        <?php 
+        <?php
 include "database.php";
-    if(isset($_POST['login'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        
-        $sql = "SELECT * FROM users Where username='$username' AND password = '$password'";
-        $result = $db->query($sql);
+session_start();
 
-        if($result ->num_rows > 0){
-            $data = $result->fetch_assoc();
-            
-            header("Location: home.php");
+if (isset($_SESSION["is_login"])) {
+    header("Location: home.php");
+}
+
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Menggunakan prepared statement
+    $sql = "SELECT * FROM users WHERE username=? LIMIT 1";
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $data = $result->fetch_assoc();
+
+        // Memverifikasi password menggunakan password_verify()
+        if (password_verify($password, $data["password"])) {
+            $_SESSION["username"] = $data["username"];
+            $_SESSION["is_login"] = true;
+            echo "<script>location.href='home.php';</script>";
+            exit(); // Keluar dari skrip setelah mengarahkan pengguna
         } else {
-            echo '<p style="color: red; font-weight: bold;">Akun tidak ditemukan</p>';
+            echo '<p style="color: red; font-weight: bold;">Password tidak cocok</p>';
         }
-        
+    } else {
+        echo '<p style="color: red; font-weight: bold;">Akun tidak ditemukan</p>';
     }
+
+    $stmt->close();
+    $db->close();
+}
 ?>
+
     </div>
 </div>
 
