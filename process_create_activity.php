@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Jika data tidak dikirimkan melalui metode POST, tampilkan pesan error
     echo "Error: Data not submitted via POST method!";
 }
-
 // Tutup koneksi
 mysqli_close($db);
 ?>

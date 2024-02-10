@@ -1,10 +1,25 @@
 <?php
-if (isset( $_SESSION['admin'])) {
-    header("location: home.php");
-    exit();
-}
+session_start();
+// Periksa apakah pengguna sudah login
+$admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
 
+if ($admin_akses !== null) {
+    // Ensure that $admin_akses is an array
+    $admin_akses = (array)$admin_akses;
+    $admin = in_array("admin", $admin_akses);
+
+    if (!$admin) {
+        // Redirect users without admin access to home.php
+        header("Location: home.php");
+        exit(); // Make sure to exit after a redirect
+    }
+} else {
+    // Redirect users who are not logged in to the login page
+    header("Location: index.php");
+    exit(); // Make sure to exit after a redirect
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,3 +52,4 @@ if (isset( $_SESSION['admin'])) {
     </form>
 </body>
 </html>
+

@@ -1,31 +1,29 @@
 <?php 
 include "database.php";
 session_start();
+
+// Check if user is not logged in, redirect to login page
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit(); // Ensure script stops executing after redirect
+}
+
+include "database.php";
+
 if (isset($_POST['logout'])){
     session_destroy();
     header("location:index.php");
+    exit(); // Ensure script stops executing after redirect
 }
 
-
-
-// Periksa apakah pengguna sudah login
+// Periksa apakah pengguna memiliki akses admin
 $admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
+$admin = false; // Set default value for admin access
 
 if ($admin_akses !== null) {
     // Ensure that $admin_akses is an array
-    $admin_akses = (array)$admin_akses;
+    $admin_akses = (array) $admin_akses;
     $admin = in_array("admin", $admin_akses);
-
-    if ($admin) {
-        // Code for admin access
-        echo "User has admin access.";
-    } else {
-        // Handle the case where 'admin_akses' is an array but doesn't contain 'admin'
-        echo "User doesn't have admin access.";
-    }
-} else {
-    // Handle the case where 'admin_akses' is not set
-    echo "Admin access not available.";
 }
 ?>
 
