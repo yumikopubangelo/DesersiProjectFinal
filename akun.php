@@ -1,24 +1,25 @@
 <?php 
+session_start();
 include "database.php";
-    session_start();
-    if (isset($_POST['logout'])){
+if (isset($_POST['logout'])){
     session_destroy();
     header("location:index.php");
 }
 
 if(isset($_SESSION['photo_filename'])){
     $photo_filename = $_SESSION['photo_filename'];
-    echo "<img src='photo/{$photo_filename}' alt='Foto Profil' height='250px' width='250px'>";
     // You can continue adding more code here if needed
 }else{
     echo "Session variable 'photo_filename' is not set.";
-}var_dump(isset($_SESSION));
+}
 
 // Periksa apakah pengguna sudah login
 if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true) {
     header("Location: index.php"); // Arahkan pengguna ke halaman login jika belum login
     exit();
 }
+
+
 ?>
 
 
@@ -64,7 +65,7 @@ function handleRadioButtonClick(event) {
 <div class="card">
 <div class="card-photo">
     <?php if(isset($_SESSION['photo_filename'])): ?>
-        <img src="photo/<?php echo $_SESSION['photo_filename']; ?>" alt="Foto Profil" height="250px" width="250px">
+        <img src="photo/<?php echo $_SESSION['photo_filename']; ?>" alt="Foto Profil" height="50px" width="50px">
     <?php endif; ?>
 </div>
 

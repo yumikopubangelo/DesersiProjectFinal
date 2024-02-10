@@ -27,11 +27,13 @@ if (isset($_POST['login'])) {
 
         if ($result->num_rows > 0) {
             $data = $result->fetch_assoc();
-
+            
             // Verifying password using password_verify()
             if (password_verify($password, $data["password"])) {
-                // Store photo filename in session for later use
+                // Store user information in session variables
+                $_SESSION['username'] = $data['username'];
                 $_SESSION['photo_filename'] = $data['photo_filename'];
+                $_SESSION['is_login'] = true;
 
                 // Check admin access
                 $id = $data['id'];
@@ -47,13 +49,13 @@ if (isset($_POST['login'])) {
                         $akses[] = $dataAdmin['akses_id'];
                     }
 
-                    $_SESSION['username'] = $data["username"];
-                    $_SESSION['is_login'] = true;
-                    $_SESSION['id'] = $data["id"];
+                    // Store admin access in session variable
                     $_SESSION['admin_akses'] = $akses;
-                    header("location: home.php");
-                    exit();
                 }
+
+                // Redirect to home page after setting session variables
+                header("location: home.php");
+                exit();
             } else {
                 $err = "Password tidak cocok";
             }
@@ -67,6 +69,7 @@ if (isset($_POST['login'])) {
 
 $db->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,21 +1,19 @@
 <?php 
 include "database.php";
-    session_start();
-    if (isset($_POST['logout'])){
+session_start();
+
+// Check if the user clicked on logout
+if (isset($_POST['logout'])){
     session_destroy();
     header("location:index.php");
-}
-
-
-// Periksa apakah pengguna sudah login
-if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true) {
-    header("Location: index.php"); // Arahkan pengguna ke halaman login jika belum login
     exit();
 }
 
-  
-
-
+// Check if the user is logged in
+if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true) {
+    header("Location: index.php"); // Redirect to the login page if not logged in
+    exit();
+}
 ?>
 
 
