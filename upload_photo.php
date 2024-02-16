@@ -7,6 +7,25 @@ if (!isset($_SESSION["is_login"]) || $_SESSION["is_login"] !== true) {
     exit();
 }
 
+// Periksa apakah pengguna sudah login sebagai admin
+$admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
+
+if ($admin_akses !== null) {
+    // Ensure that $admin_akses is an array
+    $admin_akses = (array)$admin_akses;
+    $admin = in_array("admin", $admin_akses);
+
+    if (!$admin) {
+        // Redirect users without admin access to home.php
+        header("Location: home.php");
+        exit(); // Make sure to exit after a redirect
+    }
+} else {
+    // Redirect users who are not logged in to the login page
+    header("Location: index.php");
+    exit(); // Make sure to exit after a redirect
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["photo"])) {
     // Handle photo upload
     $targetDirectory = "photo/"; // Directory where photos will be stored

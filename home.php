@@ -38,7 +38,8 @@ if ($admin_akses !== null) {
     <link rel="stylesheet" href="css/logout.css">
     <link rel="stylesheet" href="css/radio.css">
     <link rel="stylesheet" href="css/list_kegiatan_home.css">
-    <link rel="stylesheet" href="css/tombol_menambahkan.css">
+    <link rel="stylesheet" href="layout/tombol_menambahkan.css">
+    
     <form action="home.php" method="POST">
         <button class="btn" type="submit" name="logout">
             <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0092E4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -103,6 +104,21 @@ if ($admin_akses !== null) {
     </div>
 </div>
 
+<?php 
+// Check if 'admin' is in the array and ensure $_SESSION['admin_akses'] is an array
+if (isset($_SESSION['admin_akses']) && is_array($_SESSION['admin_akses']) && in_array("admin", $_SESSION['admin_akses'])) {
+?>
+<button onclick="window.location.href='create_activity.php';">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="none" d="M0 0h24v24H0z"/>
+    <path d="M20 11H13V4c0-.55-.45-1-1-1s-1 .45-1 1v7H4c-.55 0-1 .45-1 1s.45 1 1 1h7v7c0 .55.45 1 1 1s1-.45 1-1v-7h7c.55 0 1-.45 1-1s-.45-1-1-1z"/>
+  </svg>
+</button>
+
+
+<?php
+}
+?>
 <!-- Pindah Halaman -->
 <div class="radio-inputs">
     <label class="radio" for="radio-home" onclick="window.location.href='home.php'">
@@ -118,24 +134,6 @@ if ($admin_akses !== null) {
         <span class="name">Akun</span>
     </label>
 </div>
-
-<?php 
-// Check if 'admin' is in the array and ensure $_SESSION['admin_akses'] is an array
-if (isset($_SESSION['admin_akses']) && is_array($_SESSION['admin_akses']) && in_array("admin", $_SESSION['admin_akses'])) {
-?>
-    <!-- Your existing code for admin access -->
-    <input checked="" class="checkbox" type="checkbox"> 
-    <div class="mainbox">
-        <div class="iconContainer">
-            <svg viewBox="0 0 24 24" height="1em" xmlns="http://www.w3.org/2000/svg" class="plus_icon">
-                <path d="M19 11H13V5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H11V19C11 19.5523 11.4477 19.5523 12 19V13H19C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11Z"/>
-            </svg>
-        </div>
-        <input class="search_input" placeholder="search" type="text">
-    </div>
-<?php
-}
-?>
 
 </body>
 </html>
