@@ -27,6 +27,16 @@ if (!$result_today || !$result_past) {
     die("Query failed: " . mysqli_error($db));
 }
 
+// Periksa apakah pengguna memiliki akses admin
+$admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
+$admin = false; // Set default value for admin access
+
+if ($admin_akses !== null) {
+    // Ensure that $admin_akses is an array
+    $admin_akses = (array) $admin_akses;
+    $admin = in_array("admin", $admin_akses);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +91,15 @@ if (!$result_today || !$result_past) {
             <th>Nama Kegiatan</th>
             <th>Deskripsi</th>
             <th>Tanggal</th>
+            
+<?php 
+// Check if 'admin' is in the array and ensure $_SESSION['admin_akses'] is an array
+if (isset($_SESSION['admin_akses']) && is_array($_SESSION['admin_akses']) && in_array("admin", $_SESSION['admin_akses'])) {
+?>
             <th>Input Kehadiran</th>
+<?php
+}
+?>       
         </tr>
     </thead>
     <tbody>
@@ -90,7 +108,15 @@ if (!$result_today || !$result_past) {
                 <td><?php echo $row['title']; ?></td>
                 <td><?php echo $row['description']; ?></td>
                 <td><?php echo $row['attendance_time']; ?></td>
+                            
+                <?php 
+                // Check if 'admin' is in the array and ensure $_SESSION['admin_akses'] is an array
+                if (isset($_SESSION['admin_akses']) && is_array($_SESSION['admin_akses']) && in_array("admin", $_SESSION['admin_akses'])) {
+                ?>
                 <td><a href="manual.php?aktifitas_id=<?php echo $row['aktifitas_id']; ?>">Input Absensi</a></td>
+                <?php
+                }
+                ?>  
             </tr>
         <?php endwhile; ?>
     </tbody>
@@ -103,7 +129,14 @@ if (!$result_today || !$result_past) {
             <th>Nama Kegiatan</th>
             <th>Deskripsi</th>
             <th>Tanggal</th>
+            <?php 
+                // Check if 'admin' is in the array and ensure $_SESSION['admin_akses'] is an array
+                if (isset($_SESSION['admin_akses']) && is_array($_SESSION['admin_akses']) && in_array("admin", $_SESSION['admin_akses'])) {
+                ?>
             <th>Input Kehadiran</th>
+            <?php
+                }
+                ?> 
         </tr>
     </thead>
     <tbody>
@@ -112,7 +145,14 @@ if (!$result_today || !$result_past) {
                 <td><?php echo $row['title']; ?></td>
                 <td><?php echo $row['description']; ?></td>
                 <td><?php echo $row['attendance_time']; ?></td>
+                <?php 
+                // Check if 'admin' is in the array and ensure $_SESSION['admin_akses'] is an array
+                if (isset($_SESSION['admin_akses']) && is_array($_SESSION['admin_akses']) && in_array("admin", $_SESSION['admin_akses'])) {
+                ?>
                 <td><a href="list_hadir.php?aktifitas_id=<?php echo $row['aktifitas_id']; ?>">List Kehadiran</a></td>
+                <?php
+                }
+                ?>
             </tr>
         <?php endwhile; ?>
     </tbody>

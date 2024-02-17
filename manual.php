@@ -6,6 +6,7 @@ if (!isset($_SESSION['username'])) {
     exit(); // Ensure script stops executing after redirect
 }
 
+
 // Periksa apakah pengguna sudah login sebagai admin
 $admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
 
@@ -24,7 +25,16 @@ if ($admin_akses !== null) {
     header("Location: index.php");
     exit(); // Make sure to exit after a redirect
 }
-// Check if aktivitas_id is included in the URL parameter and is not empty
+// Check if aktivitas_id is included in the URL parameter and is not 
+
+if(isset($_GET['aktifitas_id'])) {
+    echo "Aktifitas ID: " . $_GET['aktifitas_id'];
+} else {
+    echo "Aktifitas ID not found in URL parameter.";
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -38,18 +48,15 @@ if ($admin_akses !== null) {
 </head>
 <body>
     <h2>Manual Attendance</h2>
-    <form action="process_manual_attendance.php" method="POST">
+    <form action="process_manual_attendance.php?aktifitas_id=<?php echo $_GET['aktifitas_id']; ?>" method="POST">
+    <input type="hidden" name="aktivitas_id" value="<?php echo $_GET['aktifitas_id']; ?>">
+        
         <label for="username">Username Guru:</label><br>
         <input type="text" id="username" name="username" required><br><br>
         
-        <label for="activity_id">Activity ID:</label><br>
-        <input type="text" id="activity_id" name="activity_id" required><br><br>
-        
-        <label for="attendance_time">Attendance Time:</label><br>
-        <input type="datetime-local" id="attendance_time" name="attendance_time" required><br><br>
-        
-        <input type="submit" value="Submit Attendance">
-        <button type="button" onclick="window.location.href='list_hadir.php'">List Kehadiran</button>
+        <a href="process_manual_attendance.php?aktivitas_id=<?php echo $_GET['aktifitas_id']; ?>"> <input type="submit" value="Submit Attendance"></a>
+        <a href="list_hadir.php?aktifitas_id=<?php echo $_GET['aktifitas_id']; ?>"><button type="button">List Kehadiran</button></a>
+
     </form>
 </body>
 </html>

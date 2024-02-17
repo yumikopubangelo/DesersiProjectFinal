@@ -2,65 +2,63 @@
 session_start();
 include "database.php";
 
-// Periksa apakah pengguna sudah login sebagai admin
+// Check if user is logged in as admin
 $admin_akses = isset($_SESSION['admin_akses']) ? $_SESSION['admin_akses'] : null;
 
-if ($admin_akses !== null) {
-    // Ensure that $admin_akses is an array
-    $admin_akses = (array)$admin_akses;
-    $admin = in_array("admin", $admin_akses);
+if ($admin_akses !== null && in_array("admin", (array) $admin_akses)) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Validate and sanitize user input
+        $username = isset($_POST['username']) ? mysqli_real_escape_string($db, $_POST['username']) : '';
 
-    if (!$admin) {
-        // Redirect users without admin access to home.php
-        header("Location: home.php");
-        exit(); // Make sure to exit after a redirect
-    }
-} else {
-    // Redirect users who are not logged in to the login page
-    header("Location: index.php");
-    exit(); // Make sure to exit after a redirect
-}
+        if (!empty($username)) {
+            // Get user ID based on username
+            $query = "SELECT id FROM users WHERE username = '$username'";
+            $result = mysqli_query($db, $query);
 
-// Periksa apakah data telah dikirimkan melalui metode POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil nilai username, activity_id, dan attendance_time dari inputan form
-    $username = $_POST['username'];
-    $activity_id = $_POST['activity_id'];
-    $attendance_time = $_POST['attendance_time'];
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $guru_id = $row['id'];
 
-    // Query untuk mencari ID guru berdasarkan username
-    $query = "SELECT id FROM users WHERE username = '$username'";
-    $result = mysqli_query($db, $query);
+                // Check if 'aktivitas_id' is set in the URL parameter
+                if (isset($_GET['aktifitas_id'])) {
+                    $aktivitas_id = $_GET['aktifitas_id'];
 
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $guru_id = $row['id'];
+                    // Insert attendance data into the database
+                    $query = "INSERT INTO kehadiran (id, aktivitas_id, guru_id) VALUES (NULL, ?, ?)";
+                    $stmt = mysqli_prepare($db, $query);
 
-        // Lakukan koneksi ke database (sesuaikan dengan koneksi Anda)
-        include 'database.php';
+                    if ($stmt) {
+                        mysqli_stmt_bind_param($stmt, "ii", $aktivitas_id, $guru_id);
+                        mysqli_stmt_execute($stmt);
 
-        // Gunakan pernyataan SQL INSERT untuk menyimpan data kehadiran
-        // Perbaiki juga bagian VALUES, ganti 'username' menjadi '$username'
-        $query = "INSERT INTO kehadiran (id, aktivitas_id, guru_id, waktu_kehadiran) VALUES (NULL, '$activity_id', '$guru_id', '$attendance_time')";
-        $result = mysqli_query($db, $query);
-
-        if ($result) {
-            // Redirect user back to manual attendance page with a success message
-            header("Location: list_hadir.php");
-            exit();
+                        if (mysqli_stmt_affected_rows($stmt) > 0) {
+                            // Data berhasil disimpan
+                            header("Location: list_hadir.php");
+                            exit();
+                        } else {
+                            echo "Error: Failed to save attendance data.";
+                        }
+                    } else {
+                        echo "Error: " . mysqli_error($db);
+                    }
+                } else {
+                    echo "Error: Activity ID not found in URL parameter.";
+                }
+            } else {
+                echo "Error: User with username '$username' not found!";
+            }
         } else {
-            // Penanganan kesalahan jika gagal menyimpan data
-            echo "Error: " . mysqli_error($db);
+            echo "Error: Username cannot be empty.";
         }
     } else {
-        // Error jika pengguna tidak ditemukan
-        echo "Error: User with username '$username' not found!";
+        echo "Error: Data not submitted via POST method!";
     }
-
-    // Tutup koneksi database
-    mysqli_close($db);
 } else {
-    // Jika data tidak dikirimkan melalui metode POST, tampilkan pesan error
-    echo "Error: Data not submitted via POST method!";
+    // Redirect users who are not logged in as admin to the login page
+    header("Location: index.php");
+    exit();
 }
+
+// Close database connection
+mysqli_close($db);
 ?>
