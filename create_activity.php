@@ -20,7 +20,6 @@ if ($admin_akses !== null) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,25 +29,12 @@ if ($admin_akses !== null) {
     <link rel="stylesheet" href="CSS/create_activity.css">
 </head>
 <body>
-    <h2>Create New Activity</h2>
-    <form action="process_create_activity.php" method="POST">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" required><br><br>
-        
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description" rows="4" cols="50" required></textarea><br><br>
-        
-        <label for="date">Date:</label><br>
-        <input type="date" id="date" name="date" required><br><br>
-        
-        <label for="absensi_method">Attendance Method:</label><br>
-        <select id="absensi_method" name="absensi_method" required>
-            <option value="manual">Manual</option>
-            <option value="qr_code">QR Code</option>
-            <option value="tracking_maps">Tracking Maps</option>
-        </select><br><br>
-        
-        <input type="submit" value="Create Activity">
-    </form>
+    <h2>Buat Kegiatan Baru</h2>
+    <p>Mangga, di pilih dulu metode absensi nya:</p>
+    <ul>
+        <li><a href="qrcode_form.php">QR Code</a></li>
+        <li><a href="manual_form.php">Manual</a></li>
+        <li><a href="tracking_form.php">Tracking Maps (Koming Sun)</a></li>
+    </ul>
 </body>
 </html>
