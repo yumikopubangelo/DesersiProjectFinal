@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (mysqli_stmt_execute($stmt)) {
                 // Kegiatan berhasil ditambahkan ke database
                 // Lakukan tindakan lanjutan jika diperlukan
-                header("Location: manual.php");
+                header("Location: manual_attendance.php");
                 exit();
             } else {
                 // Penanganan kesalahan jika query tidak berhasil dieksekusi

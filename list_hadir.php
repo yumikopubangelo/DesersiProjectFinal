@@ -24,52 +24,78 @@ if ($admin_akses !== null) {
     header("Location: index.php");
     exit(); // Make sure to exit after a redirect
 }
-// Check if aktivitas_id is included in the URL parameter and is not empty
-?>
+// Dapatkan id pengguna yang sedang login
 
+// Periksa apakah 'aktifitas_id' telah diset
+
+// Periksa apakah ada ID kegiatan dari parameter URL
+if(isset($_GET['aktifitas_id'])) {
+    $id_kegiatan = $_GET['aktifitas_id'];
+
+    // Query untuk mendapatkan detail kegiatan berdasarkan id_kegiatan yang dipilih
+    $query_kegiatan = "SELECT * FROM kegiatan WHERE aktifitas_id = $id_kegiatan";
+    $result_kegiatan = mysqli_query($db, $query_kegiatan);
+
+    if (!$result_kegiatan) {
+        echo "Error: " . mysqli_error($db);
+        exit();
+    }
+
+    // Ambil data kegiatan dari hasil query
+    $kegiatan = mysqli_fetch_assoc($result_kegiatan);
+} else {
+    // Jika ID kegiatan tidak ditemukan dalam parameter URL, lakukan penanganan kesalahan atau redirect ke halaman lain
+    echo "Error: ID kegiatan tidak ditemukan.";
+    exit();
+}
+
+// Query untuk mendapatkan daftar kehadiran yang terkait dengan id kegiatan yang dipilih
+$query_kehadiran = "SELECT kehadiran.*, users.username 
+                   FROM kehadiran 
+                   INNER JOIN users ON kehadiran.guru_id = users.id
+                   WHERE kehadiran.aktivitas_id = ?";
+$stmt_kehadiran = mysqli_prepare($db, $query_kehadiran);
+mysqli_stmt_bind_param($stmt_kehadiran, "i", $id_kegiatan);
+mysqli_stmt_execute($stmt_kehadiran);
+$result_kehadiran = mysqli_stmt_get_result($stmt_kehadiran);
+
+if (!$result_kehadiran) {
+    echo "Error: " . mysqli_error($db);
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance List</title>
-    <link rel="stylesheet" href="css/list.css">
+    <title>Detail Kegiatan</title>
+    <link rel="stylesheet" href="layout/list.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Attendance List</h2>
-        <div class="attendance-table">
-            <table>
+    <h1>Detail Kegiatan</h1>
+    <h2>Nama Kegiatan: <?php echo $kegiatan['title']; ?></h2>
+    <p>Deskripsi: <?php echo $kegiatan['description']; ?></p>
+    <p>Tanggal: <?php echo $kegiatan['attendance_time']; ?></p>
+
+    <h2>Daftar Kehadiran</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Pengguna</th>
+                <th>Waktu Kehadiran</th>
+                <!-- Tambahkan kolom lain jika diperlukan -->
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = mysqli_fetch_assoc($result_kehadiran)) : ?>
                 <tr>
-                    <th>Username</th>
-                    <th>Activity ID</th>
-                    <th>Waktu Kehadiran</th>
+                    <td><?php echo $row['username']; ?></td>
+                    <td><?php echo $row['waktu_kehadiran']; ?></td>
+                    <!-- Tambahkan kolom lain jika diperlukan -->
                 </tr>
-                <!-- PHP code to fetch and display attendance data goes here -->
-                <?php
-                // Query to fetch all attendance data
-                $query = "SELECT kehadiran.*, users.username 
-                FROM kehadiran 
-                INNER JOIN users ON kehadiran.guru_id = users.id";
-
-                $result = mysqli_query($db, $query); // Execute the query and store the result
-
-                if ($result && mysqli_num_rows($result) > 0) {
-                    // Iterate through each row of attendance data and display it in the table
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>";
-                        echo "<td>" . $row['username'] . "</td>";
-                        echo "<td>" . $row['aktivitas_id'] . "</td>";
-                        echo "<td>" . $row['waktu_kehadiran'] . "</td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    // Display a message if there is no attendance data
-                    echo "<tr><td colspan='3'>No attendance data available.</td></tr>";
-                }
-                ?>
-            </table>
-        </div>
-    </div>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
 </body>
 </html>

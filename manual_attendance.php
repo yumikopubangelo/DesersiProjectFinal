@@ -33,7 +33,7 @@ if ($admin_akses !== null) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manual Attendance</title>
-    <link rel="stylesheet" href="css/manual.css"> <!-- Ubah sesuai dengan lokasi file CSS Anda -->
+    <link rel="stylesheet" href="css/manual.css">
     <link rel="stylesheet" href="layout/button_manual.css">
 </head>
 <body>
